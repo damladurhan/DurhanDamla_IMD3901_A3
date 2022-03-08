@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>user click Test</title>
+        <meta charset="utf-8" />
+        <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+        <script src="https://unpkg.com/aframe-event-set-component@3.0.3/dist/aframe-event-set-component.min.js"></script>
+        <script src="https://unpkg.com/super-hands@^2.1.0/dist/super-hands.min.js"></script>
+
+        <link rel="stylesheet" href="user-gesture.css">
+
+        <script>
+            AFRAME.registerComponent('start-experience', {
+                init : function() {
+                      console.log('scene loaded');
+                      document.querySelector('#user-gesture-button').style.display = 'block';
+                }
+            });
+  
+        </script>
+    </head>
+
+    <body>
+
+        <div id="user-gesture-overlay">
+            <div class="center">
+                <button id="user-gesture-button">Start</button>
+            </div>
+        </div>
+
+    </head>
+
+    <body>
+        <a-scene background="color:rgb(161, 215, 81);">
+        <a-entity progressive-controls></a-entity>
+
+          
+            <a-entity camera wasd-controls look-controls position="0 1.6 0">
+                <a-entity cursor="rayOrigin:mouse;" raycaster="far:20; interval:200; objects:.interactive"></a-entity>
+                <a-cursor intersection-spwan="event:click; mixin:vovel"></a-cursor>
+            </a-entity>
+
+            <!--boxes-->
+            <a-entity id="box_1" geometry="primitive:box; width: 1, height: 1, depth: 1; " material="color: rgb(255, 255, 255)" position="1.5 1 -7" visible="true" droppable></a-entity>
+            <a-box id="box_2" color="white" position="-1.5 1 -7" visible="true" droppable></a-box>
+            <a-box id="box_3" color="white" position="1.5 4 -7" visible="true" droppable></a-box>
+            <a-box id="box_4" color="white" position="-1.5 4 -7" visible="true" droppable></a-box>
+            <a-box id="box_5" color="white" position="-1.5 7 -7" visible="true" droppable></a-box>
+            <a-box id="box_6" color="white" position="1.5 7 -7" visible="true" droppable></a-box>
+            <a-box id="box_7" color="white" position="4.5 7 -7" visible="true" droppable></a-box>
+            <a-box id="box_8" color="white" position="4.5 4 -7" visible="true" droppable></a-box>
+            <a-box id="box_9" color="white" position="4.5 1 -7" visible="true" droppable></a-box>
+
+        <script src="/socket.io/socket.io.js"></script>
+        <script>
+            let socket = io();
+
+            // tracks number of times start button has been pressed
+            var buttonTracker = 0;
+
+            socket.on('connect', (userData) =>{
+                console.log('i am connected');
+
+
+                // START Button
+                document.querySelector('#user-gesture-overlay').addEventListener('click', function(){
+                    socket.emit('startBtn');
+                });
+
+                // start button overlay
+                socket.on('gameplay', (data)=>{
+                    // tracks number of times button is pressed
+                    buttonTracker++;
+                    console.log("player "+ socket.id + " gameplay " + buttonTracker);
+
+                    // If user1s ID is the same as the one that PRESSED the btn
+                    if(socket.id == data.id){
+                    // remove button option
+                    document.querySelector('#user-gesture-button').style.display = 'none';
+                    }
+
+                    // If BOTH players pressed the button
+                    if(buttonTracker == 2){
+                        document.querySelector('#user-gesture-overlay').style.display = 'none';
+                    }
+                });
+
+                //BOX_1            
+                document.querySelector('#box_1').addEventListener('click', function(){
+                    console.log('box 1 is red');
+                    socket.emit('red');
+                });
+                socket.on('color_change', (data)=>{
+                    //css color type -rgb(255, 255, 255)
+                    let colorStr = 'rgb(' + data.r + ',' + data.g + ',' + data.b + ')';
+                    console.log('color_change socket event: ' + colorStr);
+                    document.querySelector('#box_1').setAttribute('material', {color:colorStr});
+                });
+
+                //BOX_2
+                document.querySelector('#box_2').addEventListener('click', function(){
+                    console.log('box 2 is red');
+                    socket.emit('red_2');
+                });
+                socket.on('color_change_2', (data)=>{
+                    //css color type -rgb(255, 255, 255)
+                    let colorStr = 'rgb(' + data.r + ',' + data.g + ',' + data.b + ')';
+                    console.log('color_change socket event: ' + colorStr);
+                    document.querySelector('#box_2').setAttribute('material', {color:colorStr});
+                });
+
+                //BOX_3
+                document.querySelector('#box_3').addEventListener('click', function(){
+                    console.log('box  is red');
+                    socket.emit('red_3');
+                });
+                socket.on('color_change_3', (data)=>{
+                    //css color type -rgb(255, 255, 255)
+                    let colorStr = 'rgb(' + data.r + ',' + data.g + ',' + data.b + ')';
+                    console.log('color_change socket event: ' + colorStr);
+                    document.querySelector('#box_3').setAttribute('material', {color:colorStr});
+                });
+
+                //BOX_4
+                document.querySelector('#box_4').addEventListener('click', function(){
+                    console.log('box 4 is red');
+                    socket.emit('red_4');
+                });
+                socket.on('color_change_4', (data)=>{
+                    //css color type -rgb(255, 255, 255)
+                    let colorStr = 'rgb(' + data.r + ',' + data.g + ',' + data.b + ')';
+                    console.log('color_change socket event: ' + colorStr);
+                    document.querySelector('#box_4').setAttribute('material', {color:colorStr});
+                });
+
+                //BOX_5
+                document.querySelector('#box_5').addEventListener('click', function(){
+                    console.log('box 5 is red');
+                    socket.emit('red_5');
+                });
+                socket.on('color_change_5', (data)=>{
+                    //css color type -rgb(255, 255, 255)
+                    let colorStr = 'rgb(' + data.r + ',' + data.g + ',' + data.b + ')';
+                    console.log('color_change socket event: ' + colorStr);
+                    document.querySelector('#box_5').setAttribute('material', {color:colorStr});
+                });
+
+                //BOX_6
+                document.querySelector('#box_6').addEventListener('click', function(){
+                    console.log('box 6 is red');
+                    socket.emit('red_6');
+                });
+                socket.on('color_change_6', (data)=>{
+                    //css color type -rgb(255, 255, 255)
+                    let colorStr = 'rgb(' + data.r + ',' + data.g + ',' + data.b + ')';
+                    console.log('color_change socket event: ' + colorStr);
+                    document.querySelector('#box_6').setAttribute('material', {color:colorStr});
+                });
+
+                //BOX_7
+                document.querySelector('#box_7').addEventListener('click', function(){
+                    console.log('box 7 is red');
+                    socket.emit('red_7');
+                });
+                socket.on('color_change_7', (data)=>{
+                    //css color type -rgb(255, 255, 255)
+                    let colorStr = 'rgb(' + data.r + ',' + data.g + ',' + data.b + ')';
+                    console.log('color_change socket event: ' + colorStr);
+                    document.querySelector('#box_7').setAttribute('material', {color:colorStr});
+                });
+
+                //BOX_8
+                document.querySelector('#box_8').addEventListener('click', function(){
+                    console.log('box 8 is red');
+                    socket.emit('red_8');
+                });
+                socket.on('color_change_8', (data)=>{
+                    //css color type -rgb(255, 255, 255)
+                    let colorStr = 'rgb(' + data.r + ',' + data.g + ',' + data.b + ')';
+                    console.log('color_change socket event: ' + colorStr);
+                    document.querySelector('#box_8').setAttribute('material', {color:colorStr});
+                });
+
+                //BOX_9
+                document.querySelector('#box_9').addEventListener('click', function(){
+                    console.log('box 9 is red');
+                    socket.emit('red_9');
+                });
+                socket.on('color_change_9', (data)=>{
+                    //css color type -rgb(255, 255, 255)
+                    let colorStr = 'rgb(' + data.r + ',' + data.g + ',' + data.b + ')';
+                    console.log('color_change socket event: ' + colorStr);
+                    document.querySelector('#box_9').setAttribute('material', {color:colorStr});
+                });
+
+                socket.on('message', message => {
+                console.log(message);
+                       
+                });
+
+                socket.on('disconnected', message => {
+                console.log(message);
+                       
+                });
+
+
+
+            });
+
+
+        </script>
+
+    </body>
+</html>
